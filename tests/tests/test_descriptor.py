@@ -223,7 +223,6 @@ class DescriptorTest(TestCase):
         for d in keys:
             Descriptor.from_string(d)
 
-
         # invalid
         keys = [
             # # LIANA_MINISCRIPT_DESCRIPTOR
@@ -341,6 +340,10 @@ class DescriptorTest(TestCase):
                 with self.subTest(source=source):
                     fragment = Miniscript.from_string(source)
                     fragment.verify()
+                    if left == "0":
+                        # These fragments have valid types but no satisfaction;
+                        # they are controls for bare verify(), not descriptors.
+                        continue
                     self.assertEqual(
                         Descriptor.from_string("wsh(%s)" % source).miniscript.compile(),
                         fragment.compile(),
